@@ -7,6 +7,20 @@ import (
 	"net/http"
 )
 
+func ExecuteRequestGetResponse(request *http.Request) (*http.Response, error) {
+	res, err := http.DefaultClient.Do(request)
+	if err != nil {
+		log.Printf("attempted: %v \n error: %v", request.URL.String(), err)
+	}
+
+	if res.StatusCode < 200 || res.StatusCode > 299 {
+		log.Printf("Non 200 Code: %v", res.StatusCode)
+		return nil, fmt.Errorf("non 200 Return Code: %v", res.StatusCode)
+	}
+
+	return res, nil
+}
+
 func ExecuteRequest(request *http.Request) ([]byte, error) {
 	res, err := http.DefaultClient.Do(request)
 	if err != nil {
