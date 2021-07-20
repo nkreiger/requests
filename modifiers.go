@@ -1,6 +1,10 @@
 package requests
 
-import "net/http"
+import (
+	"encoding/base64"
+	"fmt"
+	"net/http"
+)
 
 type RequestModifier func(r *http.Request)
 
@@ -15,6 +19,13 @@ func DefaultRequest() RequestModifier {
 func CustomHeaderValue(key string, value string) RequestModifier {
 	return func(r *http.Request) {
 		r.Header.Add(key, value)
+	}
+}
+
+func SetBasicAuth(username, password string) RequestModifier {
+	return func(r *http.Request) {
+		auth := fmt.Sprintf("%s:%s", username, password)
+		r.Header.Add("Authorization", fmt.Sprintf("Basic %s", base64.StdEncoding.EncodeToString([]byte(auth))))
 	}
 }
 
